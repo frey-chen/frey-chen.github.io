@@ -1,0 +1,74 @@
+
+ArrayList keys; // Stores key strokes
+PFont font;
+int fontsize = 25;
+float fade_speed = 4.5;
+int multiples = 6;
+
+void setup() {
+  size(600,400);
+  font = loadFont("Verdana-48.vlw");
+  textFont(font,fontsize);
+  smooth();
+
+  keys = new ArrayList();
+  String welcome = "Start typing!";
+  for (int i = 0; i < welcome.length(); i++) {
+    keys.add(new Letter(welcome.charAt(i),0,width/welcome.length()*i+fontsize,height/2.0, fade_speed/2));
+  }
+}
+
+void draw() {
+  background(0);
+  for (int i = 0; i <= keys.size()-1; i++) {
+    Letter temp_letter = (Letter) keys.get(i);
+    temp_letter.display();
+    if (temp_letter.gone()) {
+      keys.remove(i);
+    }
+  }
+}
+
+void keyPressed() {
+  for (int i = 0; i <= multiples; i++) {
+    Letter pressed_letter = new Letter((char) key, (int) random(-15,10));
+    keys.add(pressed_letter);
+  }
+}
+class Letter {
+
+  char letter_key;
+  int size_offset;
+  float transparent;
+  float x;
+  float y;
+  float fade_rate;
+  
+  Letter(char constr_key, int size_offset) {
+    this(constr_key, size_offset, random(0,width-fontsize), random(0+fontsize,height), fade_speed);
+  }  
+  Letter(char constr_key, int size_offset, float x, float y, float fade_rate) {
+    this.letter_key = constr_key;
+    this.size_offset = size_offset;
+    this.transparent = 255;
+    this.x = x;
+    this.y = y;
+    this.fade_rate = fade_rate;
+  }
+
+  void display() {
+    fill(random(0,255),random(0,255),random(0,255),transparent);
+    textFont(font,fontsize+size_offset);
+    text(letter_key,x,y);
+    transparent -= fade_rate;
+  }
+  
+  boolean gone() {
+    if (transparent < 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
